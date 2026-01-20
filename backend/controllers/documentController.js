@@ -93,8 +93,51 @@ const processPDF = async(documentId, filePath)=>{
 //Get all users documents
 export const getDocuments = async(req,res,next)=>{
     try{
-        
-        
+        const documents = await Document.aggregate([
+            {
+                $match: {userId: new mongoose.Types.ObjectId(req.user._id)}
+            },
+            {
+                $lookup:{
+                    from: 'flashcards',
+                    localField: '_id',
+                    foreignField: 'documentId',
+                    as: 'flashcardSets'
+                }
+            },
+            {
+                $lookup:{
+                    from: 'quizzes',
+                    localField: '_id',
+                    foreignField: 'documentId',
+                    as: 'quizzes'
+                }
+            },
+            {
+                $addFields: {
+                    flashcardCount: {$size: '$flashcardSets'},
+                    quizCount: {$size: '$quizzes'}
+                }
+            },
+            {
+                $project:{
+                    extractedText:0,
+                    chunks:0,
+                    flashcardSets:0,
+                    quizzes:0
+                }
+            },
+            {
+                $sort: { uploadDate: -1 }
+            }
+        ]);
+
+        res.status(200).json({
+            success:true,
+            count: documents.length,
+            data: documents
+        });
+
     }catch(error){
         next(error);
     }
