@@ -1,0 +1,52 @@
+const erroHandler = (err,req,res,next) => {
+    let statusCode = err.statusCode || 500;
+    let message = err.message || 'Internal Server Error';
+    
+    //Mongoose bad ObjectId
+    if(err.name === 'CastError'){
+        message = `Resource not found with id of ${err.value}`;
+        statusCode = 404;
+    }
+
+    //Mongoose duplicate key
+    if(err.code===11000){
+        const fields = Object.keys(err.keyValue)[0];
+        message = `${fields} already exists`;
+        statusCode = 400;
+    }
+
+    //Mongoose validation error
+    if(err.name === 'ValidationError'){
+        message = Object.values(err.errors).map(val => val.message).join(', ');
+    }
+
+    //Multer file size error
+    if(err.code === 'LIMIT_FILE_SIZE'){
+        message = 'File size is too large. Maximum limit is 10MB';
+        statusCode = 400;
+    }
+
+    //JWt error
+    if(err.name === 'JsonWebTokenError'){
+        message = 'Invalid token. Please log in again';
+        statusCode = 401;
+    } 
+    if(err.name === 'TokenExpiredError'){
+        message = 'Your token has expired. Please log in again';
+        statusCode = 401;
+    }
+
+    console.error('Error:',{
+        message: err.message,
+        stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+    });
+
+    res.status(statusCode).json({
+        success: false,
+        error: message,
+        statusCode,
+        ...(process.env.NODE_ENV === 'development' && {stack: err.stack})
+    });
+}
+
+export default erroHandler;
