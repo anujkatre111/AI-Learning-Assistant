@@ -172,7 +172,7 @@ export const updateDocument = async(req,res,next)=>{
     try{
 
     }catch(error){
-        //Clean up uploaded file in case of error
+        //Clean up uploaded file in case some error has occured
         if(req.file){
             await fs.unlink(req.file.path).catch(()=>{});
         }
