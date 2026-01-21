@@ -154,7 +154,7 @@ export const getDocument = async(req,res,next)=>{
     } 
 }
 
-//@desc Delete a document
+//@desc Delete a document -> this code deletes a doc
 //@route DELETE /api/documents/:id
 //@access Private access will be allowed
 export const deleteDocument = async(req,res,next)=>{
