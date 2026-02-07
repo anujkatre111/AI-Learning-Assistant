@@ -6,7 +6,7 @@ const quizSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
-    documentID: {
+    documentId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Document',
         required: true
@@ -23,7 +23,7 @@ const quizSchema = new mongoose.Schema({
         },
         options:{
             type: [String],
-            type: true,
+            required: true,
             validate: [array => array.length === 4 , 'Must have exactly 4 options']
         },
         correctAnswer:{
@@ -45,7 +45,7 @@ const quizSchema = new mongoose.Schema({
             type: Number,
             required: true
         },
-        selectAnswer:{
+        selectedAnswer:{
             type: String,
             required: true
         },

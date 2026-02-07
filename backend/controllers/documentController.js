@@ -1,4 +1,4 @@
-import Document from "../models/Document";
+import Document from "../models/Document.js";
 import Flashcard from "../models/Flashcard.js";
 import Quiz from "../models/Quiz.js";
 import { extractTextFromPDF} from "../utils/pdfParser.js"
@@ -73,7 +73,7 @@ const processPDF = async(documentId, filePath)=>{
         const { text } = await extractTextFromPDF(filePath);
 
         //Create Chunks
-        const chunks = chunkText(text,500,50);l
+        const chunks = chunkText(text,500,50);
 
         //Update document
         await Document.findByIdAndUpdate(documentId, {
@@ -148,7 +148,35 @@ export const getDocuments = async(req,res,next)=>{
 //@access Private
 export const getDocument = async(req,res,next)=>{
     try{
+    const document = await Document.findOne({
+        _id: req.params.id,
+        userId: req.user._id
+    })
+    if(!document){
+        return res.status(404).json({
+            success:false,
+            error:'Document not found',
+            statusCode:404
+        })
+    }
 
+    //Get counts of associated flashcards and quizzes
+    const flashcardCount = await Flashcard.countDocuments({documentId: document._id, userId: req.user._id});
+    const quizCount = await Quiz.countDocuments({documentId: document._id, userId: req.user._id});  
+
+    //Update last accessed date
+    document.lastAccessed = Date.now();
+    await document.save();
+
+    //Combine document data with counts
+    const documentData = document.toObject();
+    documentData.flashcardCount = flashcardCount;
+    documentData.quizCount = quizCount;
+
+    res.status(200).json({
+        success:true,
+        data: documentData
+    });
     }catch(error){
         next(error);
     } 
@@ -159,23 +187,30 @@ export const getDocument = async(req,res,next)=>{
 //@access Private access will be allowed
 export const deleteDocument = async(req,res,next)=>{
     try{
-
-    }catch(error){
-        next(error);
-    }
-}
-
-//@desc Update a document (replace file)    
-//@route PUT /api/documents/:id
-//@access Private
-export const updateDocument = async(req,res,next)=>{
-    try{
-
-    }catch(error){
-        //Clean up uploaded file in case some error has occured
-        if(req.file){
-            await fs.unlink(req.file.path).catch(()=>{});
+        const document = await Document.findOne({
+            _id: req.params.id,
+            userId: req.user._id
+        });
+        if(!document){
+            return res.status(404).json({
+                success:false,
+                error:'Document not found',
+                statusCode:404
+            });
         }
+
+       //Delete file from filesystem
+       await fs.unlink(document.filepath).catch(()=>{});
+
+       //Delete document
+       await document.deleteOne();
+
+         res.status(200).json({
+            success:true,
+            message:'Document deleted successfully'
+        }); 
+    }catch(error){
         next(error);
     }
 }
+

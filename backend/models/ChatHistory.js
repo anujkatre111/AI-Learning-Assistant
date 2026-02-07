@@ -11,18 +11,27 @@ const chatHistorySchema = new mongoose.Schema({
         ref: 'Document',
         required: true
     },
-    content: {
-        type: String,
-        required: true
-    },
-    timestamp: {
-        type: Date,
-        default: Date.now
-    },
-    relevantChunks: {
-        type: [Number],
-        default: []
-    },
+    messages: [
+        {
+          role: {
+            type: String,
+            enum: ['user', 'assistant'],
+            required: true
+          },
+          content: {
+            type: String,
+            required: true
+          },
+          timestamp: {
+            type: Date,
+            default: Date.now
+          },
+          relevantChunks: {
+            type: [Number],
+            default: []
+          }
+        }
+      ]
 },{timestamps: true,});
 
 //Index for faster queries
