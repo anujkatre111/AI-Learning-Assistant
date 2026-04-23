@@ -25,13 +25,25 @@ const app = express();
 //connect to MongoDB
 connectDB();
 
-//Middleware to handle cors
+//Middleware to handle CORS
+const allowedOrigins = [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    ...(process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',').map((origin) => origin.trim()) : []),
+];
+
 app.use(
     cors({
-        origin: '*',
-        methoda: ['GET', 'POST', 'PUT', 'DELETE'],
+        origin: (origin, callback) => {
+            // Allow mobile apps/Postman/non-browser clients with no origin header
+            if (!origin || allowedOrigins.includes(origin)) {
+                return callback(null, true);
+            }
+            return callback(new Error('Not allowed by CORS'));
+        },
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
         allowedHeaders: ['Content-Type', 'Authorization'],
-        credentials: true,
+        credentials: false,
     })
 );
 
