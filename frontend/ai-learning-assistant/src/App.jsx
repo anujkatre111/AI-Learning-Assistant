@@ -12,6 +12,7 @@ import QuizzResultPage from '../pages/Quizzes/QuizzResultPage';
 import ProfilePage from '../pages/Profile/ProfilePage';
 import ProtectedRoute from '../components/auth/ProtectedRoute';
 import { useAuth } from '../context/AuthContext';
+import Landingpage from '../pages/Landing/Landingpage';
 
 const App = () => {
   const {isAuthenticated, loading} = useAuth();
@@ -26,8 +27,13 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path='/' element={isAuthenticated? <Navigate to="/dashboard" replace/> : <Navigate to="/login" replace/>} />
-        <Route path="/login" element={<LoginPage/>}/>
+        <Route path='/' element={<Landingpage/>} /> 
+        <Route 
+  path="/login" 
+  element={isAuthenticated 
+    ? <Navigate to="/dashboard" replace/> 
+    : <LoginPage/>} 
+/>
         <Route path="/register" element={<RegisterPage/>}/>
 
         {/* Ptotected Routes */}

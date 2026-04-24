@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@react-three/fiber": "^9.6.0",
     "@tailwindcss/vite": "^4.1.18",
     "axios": "^1.13.2",
     "lucide-react": "^0.562.0",
@@ -20,7 +21,8 @@
     "react-markdown": "^10.1.0",
     "react-router-dom": "^7.12.0",
     "react-syntax-highlighter": "^16.1.0",
-    "tailwindcss": "^4.1.18"
+    "tailwindcss": "^4.1.18",
+    "three": "^0.184.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

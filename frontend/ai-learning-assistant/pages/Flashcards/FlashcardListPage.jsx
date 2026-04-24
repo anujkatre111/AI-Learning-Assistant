@@ -34,7 +34,7 @@ const FlashcardListPage = () => {
   };
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-4">
+    <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-4">
       <h1 className="mb-3 text-2xl font-semibold">Flashcards</h1>
       {loading ? (
         <p className="text-sm text-slate-500">Loading flashcard sets...</p>
@@ -43,7 +43,7 @@ const FlashcardListPage = () => {
       ) : (
         <div className="space-y-3">
           {sets.map((set) => (
-            <div key={set._id} className="flex flex-col gap-2 rounded-lg border border-slate-200 p-3 sm:flex-row sm:items-center sm:justify-between">
+            <div key={set._id} className="flex flex-col gap-2 rounded-lg border border-slate-200 bg-white p-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="font-medium">{set.documentId?.title || 'Untitled document'}</p>
                 <p className="text-xs text-slate-500">Cards: {set.cards?.length || 0}</p>

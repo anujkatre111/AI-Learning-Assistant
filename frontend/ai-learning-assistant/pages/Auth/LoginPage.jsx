@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import authService from '../../services/authService'
-import { BrainCircuit, Mail, Lock, ArrowRight } from 'lucide-react';
+import { BrainCircuit, Mail, Lock, ArrowRight, LogIn } from 'lucide-react';
 import toast from 'react-hot-toast'
 
 const LoginPage = () => {
@@ -33,25 +33,27 @@ const LoginPage = () => {
 
 
   return (
-    <div className='flex flex-col gap-[48px] justify-center items-center h-screen'>
-      <div className='flex flex-col gap-[24px] shadow-md rounded-[16px] px-8 py-10 w-[400px] border border-gray-100'>
-        <div className='flex flex-col items-center justify-center gap-[16px]'>
-          <div className='icon bg-gradient-to-r from-emerald-500 to-teal-500 rounded-[16px] p-3 w-fit shadow-emerald-500/40 shadow-lg'>
-            <BrainCircuit className='w-10 h-10 text-white' />
+    <div className='relative flex min-h-screen items-center justify-center overflow-hidden bg-linear-to-b from-sky-200 via-sky-100 to-white px-4'>
+      <div className='pointer-events-none absolute inset-0'>
+        <div className='absolute -bottom-24 left-1/2 h-80 w-[120%] -translate-x-1/2 rounded-[100%] border border-white/40' />
+        <div className='absolute bottom-8 left-1/2 h-72 w-[110%] -translate-x-1/2 rounded-[100%] border border-white/30' />
+      </div>
+
+      <div className='relative w-full max-w-sm rounded-3xl border border-white/60 bg-white/70 p-7 shadow-xl shadow-sky-200/50 backdrop-blur-md'>
+        <div className='mb-6 flex flex-col items-center gap-4'>
+          <div className='rounded-2xl border border-white/60 bg-white p-3 shadow-md'>
+            <LogIn className='h-5 w-5 text-emerald-600' />
           </div>
-          <div className='flex flex-col items-center justify-center'>
-            <h1 className='text-[24px] tracking-tight'>Welcome Back!</h1>
-            <p className='text-[16px] text-gray-500'>Sign in to continue your journey</p>
+          <div className='text-center'>
+            <h1 className='text-3xl font-semibold tracking-tight text-slate-900'>Sign in with email</h1>
+            <p className='mt-1 text-sm text-slate-500'>Continue your learning journey for free.</p>
           </div>
         </div>
-        {/*Form */}
-        <div className='flex flex-col gap-[16px]'>
-          {/*Email */}
-          <div className='flex flex-col gap-[8px]'>
-            
-            <span className='text-[14px] text-gray-500'>EMAIL</span>
-            <div className='flex items-center gap-[16px] border border-gray-300 rounded-[8px] p-2 group focus-within:border-emerald-500 focus-within:ring-1 focus-within:ring-emerald-500 transition-all ease-in-out duration-300'>
-              <Mail className='w-6 h-6 text-gray-500 group-focus-within:text-emerald-500 transition-all ease-in-out duration-300'/>
+
+        <form onSubmit={handleSubmit} className='flex flex-col gap-3'>
+          <div className='flex flex-col gap-2'>
+            <div className='flex items-center gap-3 rounded-xl border border-slate-200 bg-white/80 px-3 py-2.5 group focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-200 transition-all duration-200'>
+              <Mail className='h-4 w-4 text-slate-400 group-focus-within:text-emerald-500 transition-colors'/>
               <input
               type='email'
               id='email'
@@ -61,44 +63,61 @@ const LoginPage = () => {
               onFocus={() => setFocusedField('email')}
               onBlur={() => setFocusedField(null)}
               placeholder='you@email.com'
-              className='w-full outline-none bg-transparent'
+              className='w-full bg-transparent text-sm outline-none'
               />
             </div>
           </div>
-          {/*Password */}
-          <div className='flex flex-col gap-[8px] text-[16px]'>
-            
-            <span className='text-[14px] text-gray-500'>PASSWORD</span>
-            <div className='flex items-center gap-[16px] border border-gray-300 rounded-[8px] p-2 group focus-within:border-emerald-500 focus-within:ring-1 focus-within:ring-emerald-500 transition-all ease-in-out duration-300'>
-              <Lock className='w-6 h-6 text-gray-500 group-focus-within:text-emerald-500 transition-all ease-in-out duration-300'/>
+          <div className='flex flex-col gap-2'>
+            <div className='flex items-center gap-3 rounded-xl border border-slate-200 bg-white/80 px-3 py-2.5 group focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-200 transition-all duration-200'>
+              <Lock className='h-4 w-4 text-slate-400 group-focus-within:text-emerald-500 transition-colors'/>
               <input
               type='password'
               id='password'
               aria-label='Password'
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder='..........'
-              className='w-full outline-none bg-transparent'
+              placeholder='••••••••'
+              className='w-full bg-transparent text-sm outline-none'
               />
             </div>
+            <div className='flex justify-end'>
+              <button type='button' className='text-xs text-slate-500 hover:text-emerald-600 transition-colors'>
+                Forgot password?
+              </button>
+            </div>
           </div>
-          {error && <div className='bg-red-500/10 border border-red-500/20 text-red-500 text-[14px] text-center p-2 rounded-[8px]'>{error}</div>}
-          {/*Submit Button */}
-          <div className='flex items-center justify-center text-white text-[16px] font-light'>
+          {error && <div className='rounded-xl border border-red-500/20 bg-red-500/10 p-2 text-center text-sm text-red-500'>{error}</div>}
+          <div className='pt-1'>
             <button 
             type='submit' 
             disabled={loading} 
-            onClick={handleSubmit}
-            className='flex flex-row gap-[8px] items-center justify-center bg-gradient-to-r from-emerald-500 to-teal-500 rounded-[12px] py-3  w-full group hover:from-teal-600 hover:to-emerald-600 transition-colors shadow-emerald-500/40 shadow-lg'><p>{loading ? 'Signing in....' : 'Sign in'}</p> {loading ? <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <ArrowRight className='w-4 h-4 group-hover:translate-x-1 transition-transform'/>}</button>
+            className='group flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 py-3 text-sm font-medium text-white shadow-lg shadow-emerald-500/35 transition-all duration-200 hover:-translate-y-0.5 hover:bg-emerald-700'
+            >
+              <p>{loading ? 'Signing in...' : 'Get Started'}</p>
+              {loading ? (
+                <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+              ) : (
+                <ArrowRight className='h-4 w-4 transition-transform group-hover:translate-x-1'/>
+              )}
+            </button>
           </div>
-        </div>
-        {/*Register Link */}
-        <div className='bg-gray-200 w-full h-[1px]'></div>
-        <div className='text-center'>
-          <p className='text-[16px] text-gray-500 tracking-tight font-light'>Don't have an account?<span> <Link to='/register' className='text-emerald-500 hover:text-emerald-600 transition-colors'>Sign up</Link></span></p>
+        </form>
+
+        <div className='my-5 h-px w-full bg-slate-200'></div>
+        <div className='text-center text-sm text-slate-500'>
+          Don&apos;t have an account?{' '}
+          <Link to='/register' className='font-medium text-emerald-600 hover:text-emerald-700 transition-colors'>
+            Sign up
+          </Link>
         </div>
       </div>
-      <div className='text-center text-[14px] text-slate-500 tracking-tight font-light'>By continuing you agree to our Terms & Privacy Policy</div>
+
+      <div className='absolute left-4 top-4 flex items-center gap-2 text-sm font-medium text-slate-700'>
+        <div className='rounded-md bg-emerald-600 p-1.5 text-white shadow-md shadow-emerald-500/30'>
+          <BrainCircuit className='h-3.5 w-3.5' />
+        </div>
+        Lumina
+      </div>
     </div>
   )
 }
